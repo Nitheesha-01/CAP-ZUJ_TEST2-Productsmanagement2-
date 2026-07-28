@@ -10,9 +10,11 @@ entity Products : cuid {
         name        : String(50)     @mandatory;
         description : String(100);
         price       : Decimal(10, 2) @mandatory;
-        discount    : Integer        @mandatory @assert.format : '^(?:[0-9]|[1-6][0-9]|70)$';
+        discount    : Integer        @assert.format : '^(?:[0-9]|[1-6][0-9]|70)$';
         stock       : Integer        @mandatory;
         image       : LargeBinary    @Core.MediaType: 'image/jpeg';
+
+         discountedPrice     : Decimal(15,2) @Core.Computed;
 }
 
 entity Orders : cuid, managed {

@@ -41,6 +41,11 @@ annotate service.Products with @(
             Criticality : statusCriticality,
             CriticalityRepresentation : #WithIcon,
         },
+        {
+            $Type : 'UI.DataField',
+            Value : discountedPrice,
+            Label : 'discountedPrice',
+        },
     ],
     UI.HeaderInfo : {
         TypeName : 'Product',
@@ -127,6 +132,11 @@ annotate service.Products with @(
             {
                 $Type : 'UI.DataField',
                 Value : stock,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : discountedPrice,
+                Label : 'discountedPrice',
             },
         ],
     },
