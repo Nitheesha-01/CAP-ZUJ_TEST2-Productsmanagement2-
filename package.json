@@ -1,0 +1,25 @@
+{
+  "name": "zuj_test2",
+  "version": "1.0.0",
+  "dependencies": {
+    "@cap-js/hana": "^3.0.1",
+    "@sap/cds": "10.0.4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2.4",
+    "@sap/cds-dk": "^10.0.5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-productsmgmt": "cds watch --open com.test.productsmgmt/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-ordermgmt": "cds watch --open com.demo.ordermgmt/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/productsmgmt",
+    "app/ordermgmt"
+  ]
+}
