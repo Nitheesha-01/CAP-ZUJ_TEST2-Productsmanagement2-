@@ -99,12 +99,12 @@ annotate service.Orders with @(
             {
                 $Type: 'UI.DataField',
                 Value: customerName,
-                Label: 'customerName',
+                Label: 'Customer Name',
             },
             {
                 $Type: 'UI.DataField',
                 Value: customerMobile,
-                Label: 'customerMobile',
+                Label: 'Customer Mobile',
             },
             {
                 $Type: 'UI.DataField',
