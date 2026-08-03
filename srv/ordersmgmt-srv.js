@@ -51,6 +51,45 @@ module.exports = class OrderMgmtService extends cds.ApplicationService {
       }
     })
 
+    // Delete order Items automatically calculate net price
+    let deletedOrderId
+
+this.before('DELETE', OrderItems.drafts, async (req) => {
+
+    const item = await SELECT.one
+        .from(OrderItems.drafts)
+        .where({ ID: req.data.ID })
+
+    if (item) {
+        deletedOrderId = item.order_ID
+    }
+})
+
+this.after('DELETE', OrderItems.drafts, async () => {
+
+    if (!deletedOrderId) return
+
+    const items = await SELECT
+        .from(OrderItems.drafts)
+        .where({ order_ID: deletedOrderId })
+
+    const netPrice = items.reduce(
+        (sum, item) => sum + Number(item.totalPrice || 0),
+        0
+    )
+
+    await UPDATE(Orders.drafts)
+        .set({
+            netPrice: Number(netPrice.toFixed(2))
+        })
+        .where({
+            ID: deletedOrderId
+        })
+
+    console.log('Net Price After Delete =', netPrice)
+})
+
+
     return super.init()
   }
 }
