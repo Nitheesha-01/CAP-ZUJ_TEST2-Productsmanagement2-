@@ -1,11 +1,11 @@
 const cds = require('@sap/cds')
-const { SELECT } = cds.ql
+const { SELECT, UPDATE } = cds.ql
 
 module.exports = class OrderMgmtService extends cds.ApplicationService {
 
   async init() {
 
-    const { Orders, OrderItems } = this.entities
+   const { Orders, OrderItems, Products } = this.entities
 
     this.before(['CREATE', 'PATCH'], OrderItems.drafts, async (req) => {
 
@@ -89,10 +89,85 @@ this.after('DELETE', OrderItems.drafts, async () => {
     console.log('Net Price After Delete =', netPrice)
 })
 
+/**
+* Stock Validation and Stock Reduction
+* Executes when draft is activated
+*/
 
-    return super.init()
-  }
+this.before('SAVE', Orders, async (req) => {
+
+    console.log("SAVE EVENT TRIGGERED")
+
+    const orderId = req.data.ID
+
+    const items = await SELECT
+        .from(OrderItems.drafts)
+        .where({ order_ID: orderId })
+
+    for (const item of items) {
+
+        const product = await SELECT.one
+            .from(Products)
+            .where({ ID: item.product_ID })
+
+        if (!product) {
+            req.error(`Product not found ${item.product_ID}`)
+        }
+
+        if (product.stock < item.quantity) {
+            req.error(
+                `Insufficient stock for ${product.name}`
+            )
+        }
+
+        await UPDATE(Products)
+            .set({
+                stock: product.stock - item.quantity
+            })
+            .where({
+                ID: item.product_ID
+            })
+
+        console.log(
+            `Stock Updated => ${product.name} : ${product.stock} -> ${product.stock - item.quantity}`
+        )
+    }
+})
+
+return super.init()
+
 }
+}
+
+
+
+// this.before(['CREATE','UPDATE'],Orders,async req=>{
+// console.log("Inside before create or update of orders");
+// const items = req.data.items || [];
+// if(items.length === 0 ){
+//   req.error("Order cannot be created without items");
+// }else{
+//   for(const item of items){
+//     console.log(item);
+//     const productID = item.product_ID;
+//     const product = await SELECT.one.from(Products).where({ID:productID}); 
+//     const currentStock = product.stock;
+//     const orderQty = item.quantity; 
+//     if(currentStock<orderQty){
+//       req.error("Insufficient stock for the product"+productID+"-"+product.name);
+//     }else{
+//       await UPDATE(Products).set({stock:currentStock-orderQty}).where({ID:productID});
+//     }
+//   }
+// }
+// }
+
+// )
+
+
+//     return super.init()
+//   }
+// }
 
 // const cds = require('@sap/cds');
 // const{ SELECT,UPDATE } = require('@sap/cds/lib/ql/cds-ql');
