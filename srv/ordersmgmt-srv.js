@@ -100,15 +100,11 @@ this.before('SAVE', Orders, async (req) => {
 
     const orderId = req.data.ID
 
-    const items = await SELECT
-        .from(OrderItems.drafts)
-        .where({ order_ID: orderId })
+    const items = await SELECT.from(OrderItems.drafts).where({ order_ID: orderId })
 
     for (const item of items) {
 
-        const product = await SELECT.one
-            .from(Products)
-            .where({ ID: item.product_ID })
+        const product = await SELECT.one.from(Products).where({ ID: item.product_ID })
 
         if (!product) {
             req.error(`Product not found ${item.product_ID}`)
@@ -120,13 +116,7 @@ this.before('SAVE', Orders, async (req) => {
             )
         }
 
-        await UPDATE(Products)
-            .set({
-                stock: product.stock - item.quantity
-            })
-            .where({
-                ID: item.product_ID
-            })
+        await UPDATE(Products).set({ stock: product.stock - item.quantity}).where({ ID: item.product_ID})
 
         console.log(
             `Stock Updated => ${product.name} : ${product.stock} -> ${product.stock - item.quantity}`
