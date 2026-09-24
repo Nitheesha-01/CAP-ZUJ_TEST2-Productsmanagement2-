@@ -22,6 +22,9 @@ service ProductsMgmtService {
             end as statusCriticality : String
         }
 
-        entity Orders as projection on db.Orders ;
-        entity OrderItems as projection on db.OrderItems ;
+        // entity Orders as projection on db.Orders ;
+        // entity OrderItems as projection on db.OrderItems ;
+        actions{
+            Action Addstock(stock:Integer @Common.Label:'Add Stock') returns String;
+        }
 }

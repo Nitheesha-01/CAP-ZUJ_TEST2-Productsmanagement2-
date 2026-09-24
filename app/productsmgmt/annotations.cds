@@ -46,6 +46,11 @@ annotate service.Products with @(
             Value : discountedPrice,
             Label : 'discountedPrice',
         },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'ProductsMgmtService.Addstock',
+            Label : 'Add Stock',
+        },
     ],
     UI.HeaderInfo : {
         TypeName : 'Product',
