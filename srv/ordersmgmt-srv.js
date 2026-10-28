@@ -124,6 +124,8 @@ this.before('SAVE', Orders, async (req) => {
     }
 })
 
+// this.on("Addstock",async)
+
 return super.init()
 
 }
